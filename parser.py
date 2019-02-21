@@ -2,8 +2,8 @@
 
 from tree import Tree
 
-#html = open("in.html", "r").read()
-html = "<html><body><div>asdasdasd</div><span>oloco meu</span><img /></body></html>"
+html = open("in.html", "r").read()
+#html = "<html><body><div>asdasdasd</div><span>oloco meu</span><img /></body></html>"
 
 def tokenizer(html):
     tokens = []
@@ -39,6 +39,7 @@ def maketree(lt):
     tree = Tree('html')
 
     for token in lt:
+        open('tokens.txt', 'a+').write(token+'\n')
         if "<" in token and ("</" not in token or "/>" in token):
             tag = token.split(" ", 1)[0].replace("<","")
             tag = tag.replace(">","")
@@ -66,6 +67,9 @@ def maketree(lt):
             new_node = Tree(token)
             tree.add_child(new_node)
 
+    while tree.parent != None:
+        tree = tree.parent
+
     return tree
 
 
@@ -73,6 +77,5 @@ if __name__ == "__main__":
     lt = tokenizer(html)
 
     tree = maketree(lt)
-
     print_tree(tree)
 
