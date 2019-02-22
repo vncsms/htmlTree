@@ -3,7 +3,7 @@
 from tree import Tree
 from constants import SINGLE_TAGS
 
-html = open("in.html", "r").read().replace('\n', '')
+html = open("../in.html", "r").read().replace('\n', '')
 
 
 def tokenizer(html):
