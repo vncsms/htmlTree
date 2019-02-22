@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from tree import Tree
+from constants import SINGLE_TAGS
 
-html = open("in.html", "r").read()
-#html = "<html><body><div>asdasdasd</div><span>oloco meu</span><img /></body></html>"
+html = open("in.html", "r").read().replace('\n', '')
+
 
 def tokenizer(html):
     tokens = []
@@ -26,7 +27,8 @@ def tokenizer(html):
 
 
 def print_tree(tree):
-    print("sou", tree, "pai", tree.parent, "tenho ", len(tree.children), " filhos")
+    print("I'm: ", tree, " My parent is: ", tree.parent,
+          " And i have:  ", len(tree.children), " children")
     if len(tree.children) > 0:
         for i in tree.children:
             print_tree(i)
@@ -39,19 +41,19 @@ def maketree(lt):
     tree = Tree('html')
 
     for token in lt:
-        open('tokens.txt', 'a+').write(token+'\n')
         if "<" in token and ("</" not in token or "/>" in token):
-            tag = token.split(" ", 1)[0].replace("<","")
-            tag = tag.replace(">","")
+            tag = token.split(" ", 1)[0].replace("<", "")
+            tag = tag.replace(">", "")
             new_node = Tree(token)
             tree.add_child(new_node)
-            tree = new_node
-            stack.append(tag)
+            if tag not in SINGLE_TAGS:
+                tree = new_node
+                stack.append(tag)
 
         elif "</" in token:
-            tag = token.split(" ", 1)[0].replace("<","")
-            tag = tag.replace(">","").replace("/","")
-            results = [i for i,x in enumerate(stack) if x==tag]
+            tag = token.split(" ", 1)[0].replace("<", "")
+            tag = tag.replace(">", "").replace("/", "")
+            results = [i for i, x in enumerate(stack) if x == tag]
             if len(results) != 0:
                 pos = results[-1]
                 del stack[pos]
@@ -67,7 +69,7 @@ def maketree(lt):
             new_node = Tree(token)
             tree.add_child(new_node)
 
-    while tree.parent != None:
+    while tree.parent is not None:
         tree = tree.parent
 
     return tree
@@ -78,4 +80,3 @@ if __name__ == "__main__":
 
     tree = maketree(lt)
     print_tree(tree)
-
